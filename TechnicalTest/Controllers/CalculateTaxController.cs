@@ -22,30 +22,27 @@ namespace TechnicalTest.Controllers
         {
             try
             {
-                decimal total = 0;
-                decimal salesTax = 0;
-                decimal grandTotal = 0;
                 int salesTaxPercentage = 18;
-                string costCentre = "";
+                ReturnModel objReturnModel = new ReturnModel();
 
                 XmlDocument xmltest = new XmlDocument();
                 xmltest.LoadXml("<body>" + requestMessage + "</body>");
                 XmlNodeList nodetotal = xmltest.GetElementsByTagName("total");
                 XmlNodeList nodecostcentre = xmltest.GetElementsByTagName("cost_centre");
-                total = nodetotal.Count > 0 ? Convert.ToDecimal(nodetotal[0].InnerText) : 0;
-                costCentre = nodecostcentre.Count > 0 ? nodecostcentre[0].InnerText : "UNKNOWN";
+                objReturnModel.Total = nodetotal.Count > 0 ? Convert.ToDecimal(nodetotal[0].InnerText) : 0;
+                objReturnModel.CostCentre = nodecostcentre.Count > 0 ? nodecostcentre[0].InnerText : "UNKNOWN";
 
-                if (total > 0)
+                if (objReturnModel.Total > 0)
                 {
-                    salesTax = (total * salesTaxPercentage) / 100;
-                    grandTotal = total - salesTax;
+                    objReturnModel.SalesTax = (objReturnModel.Total * salesTaxPercentage) / 100;
+                    objReturnModel.GrandTotal = objReturnModel.Total - objReturnModel.SalesTax;
                 }
                 else
                 {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "Rejected");
                 }
 
-                return Request.CreateResponse(HttpStatusCode.OK, new ReturnModel { Total = total, SalesTax = salesTax, GrandTotal = grandTotal, CostCentre = nodecostcentre.Count > 0 ? costCentre : "UNKNOWN" });
+                return Request.CreateResponse(HttpStatusCode.OK, objReturnModel);
             }
             catch (Exception)
             {
