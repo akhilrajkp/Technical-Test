@@ -11,14 +11,14 @@ namespace TechnicalTest.Controllers
 {
     public class CalculateTaxController : ApiController
     {
-        #region CalculateSalesTax
+        #region GetCalculatedSalesTaxGrandTotal
         /// <summary>
-        /// CalculateSalesTax
+        /// Get Calculated Sales Tax Grand Total value
         /// </summary>
         /// <param name="requestMessage"></param>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage CalculateSalesTax(string requestMessage)
+        public HttpResponseMessage GetCalculatedSalesTaxGrandTotal(string requestMessage)
         {
             try
             {
@@ -26,9 +26,12 @@ namespace TechnicalTest.Controllers
                 ReturnModel objReturnModel = new ReturnModel();
 
                 XmlDocument xmltest = new XmlDocument();
-                xmltest.LoadXml("<body>" + requestMessage + "</body>");
+                xmltest.LoadXml("<body>" + requestMessage + "</body>"); //Convert the input text to XML document
+
+                //Extract Tag using Node List
                 XmlNodeList nodetotal = xmltest.GetElementsByTagName("total");
                 XmlNodeList nodecostcentre = xmltest.GetElementsByTagName("cost_centre");
+
                 objReturnModel.Total = nodetotal.Count > 0 ? Convert.ToDecimal(nodetotal[0].InnerText) : 0;
                 objReturnModel.CostCentre = nodecostcentre.Count > 0 ? nodecostcentre[0].InnerText : "UNKNOWN";
 
@@ -44,7 +47,7 @@ namespace TechnicalTest.Controllers
 
                 return Request.CreateResponse(HttpStatusCode.OK, objReturnModel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "Rejected");
             }
