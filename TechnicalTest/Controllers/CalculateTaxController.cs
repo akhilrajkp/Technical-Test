@@ -11,22 +11,23 @@ namespace TechnicalTest.Controllers
 {
     public class CalculateTaxController : ApiController
     {
-        #region GetCalculatedSalesTaxGrandTotal
+        #region CalculatedSalesTaxGrandTotal
         /// <summary>
-        /// Get Calculated Sales Tax Grand Total value
+        /// Calculate Sales Tax Grand Total
         /// </summary>
-        /// <param name="requestMessage"></param>
+        /// <param name="objRequest"></param>
         /// <returns></returns>
-        [HttpGet]
-        public HttpResponseMessage GetCalculatedSalesTaxGrandTotal(string requestMessage)
+        [HttpPost]
+        public HttpResponseMessage CalculatedSalesTaxGrandTotal(RequestModel objRequest)
         {
             try
             {
                 int salesTaxPercentage = 18;
                 ReturnModel objReturnModel = new ReturnModel();
 
+                //Convert the input text to XML document
                 XmlDocument xmltest = new XmlDocument();
-                xmltest.LoadXml("<body>" + requestMessage + "</body>"); //Convert the input text to XML document
+                xmltest.LoadXml("<body>" + objRequest.Request + "</body>");
 
                 //Extract Tag using Node List
                 XmlNodeList nodetotal = xmltest.GetElementsByTagName("total");
